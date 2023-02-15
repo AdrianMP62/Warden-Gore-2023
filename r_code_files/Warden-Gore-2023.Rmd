@@ -11,13 +11,14 @@ editor_options:
   chunk_output_type: console
 ---
 
-Git repository https://github.com/AdrianMP62/Warden-2019  
+Git repository https://github.com/AdrianMP62/Warden-Gore-2023  
 
-RStudio: Version 1.1.463 – © 2009-2018 RStudio, Inc. R version: `r getRversion()`  
+RStudio 2022.12.0+353 "Elsbeth Geranium" Release (7d165dcfc1b6d300eb247738db2c7076234f6ef0, 2022-12-03) for macOS
+Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) RStudio/2022.12.0+353 Chrome/102.0.5005.167 Electron/19.1.3 Safari/537.36. R version: `r getRversion()`  
 Date and time: `r Sys.time()`
 
 Uses the following datafiles:  
-*  Warden_Gore_by_suite_06_22.csv (System, SurveyType,	SiteName,	SiteCode,	Subsite	Date,	CommonName,	SpeciesCode,	Count) (e.g. Warden,	aerial,	Neridup Suite,	WRP001,	combined,	11/10/2006,	Great Egret,	greg,	1). Note some double counts for Oct 2006 and Feb 2015 removed.
+*  Warden_Gore_by_suite_06_23.csv (System, SurveyType,	SiteName,	SiteCode,	Subsite	Date,	CommonName,	SpeciesCode,	Count) (e.g. Warden,	aerial,	Neridup Suite,	WRP001,	combined,	11/10/2006,	Great Egret,	greg,	1). Note some double counts for Oct 2006 and Feb 2015 removed.
 *  Average depths.csv (average depths, rainfall variables and pipeline operation and timing of surveys of Warden wetlands for each survey period).
 *  Taxonomy (CommonName, Order and informal group name in consecutive columns. CommonNames match those in Warden_Gore_by_suite_06_19.csv)
 
@@ -56,7 +57,7 @@ source("./functions/extract_legend.R")
 
 #Analyses of waterbird data from the Warden and Gore Ramsar wetlands 2006 to 2019
   
-The following is the output from an Rmarkdown R script for analyses of waterbird communities of the Warden and Gore wetland systems surveyed between Oct 2006 and Feb 2021.  
+The following is the output from an Rmarkdown R script for analyses of waterbird communities of the Warden and Gore wetland systems surveyed between Oct 2006 and Feb 2023.  
   
 These analyses are based primarily on ground counts. Aerial counts are only for a few Warden system wetlands in 2006 to 2009 where ground counts were not undertaken. These include Neridup and Bandy Creek (Oct 2006-Nov 2008), Ewans (Oct 2006) and Ewans and Mullet combined (Nov 2008 - have to ignore Nov 2008 Mullet ground counts), North Wheatfield (Oct 2006, Oct 2007, Nov 2008). Note that the Nov 2008 aerial data was collected two weeks prior to the ground counts.  Gore data is included only for November 2009 onwards when ground counts are available. Some replicate count data for Oct 2006 and Feb 2015 (North Wheatfield) are excluded from the dataset above prior to import. Pink Lake is excluded from analyses because it wasnt consistently surveyed. Birds counted only while in air and not allocated to any particular wetland are given the site code 'In flight'. These conditions apply to all following analyses.  
   
@@ -64,7 +65,7 @@ These analyses are based primarily on ground counts. Aerial counts are only for 
 ##IMPORT DATA AND FORMAT COLUMNS
 ```{r}
 #create data table with unidentified birds included - for column plots of
-input.data <- read.csv("./raw_data/Warden_Gore_by_suite_06_22.csv")
+input.data <- read.csv("./raw_data/Warden_Gore_by_suite_06_23.csv")
   input.data <- input.data[-grep("Grassbird", input.data$CommonName), ] #remove records of little grassbird
   input.data$Date <- as.Date(input.data$Date, format="%d/%m/%Y")
   input.data$Survey <- input.data$Date #create Survey field from Date
@@ -86,10 +87,9 @@ Taxonomy <- read.csv("./raw_data/Taxonomy.csv")
 ###Totals of species x year for Warden+Gore
 ```{r}
 input.data.2$Year <- year(input.data.2$Date)
-WG_SxY <- as.matrix(xtabs(input.data.2$Count ~ input.data.2$CommonName + input.data.2$Year))
+WG_SxY <- as.matrix(xtabs(input.data.2$Count ~ input.data.2$CommonName + input.data.2$Survey))
 write.csv(WG_SxY, "./outputs/WG_SxY.csv")
 ```
-
 
 ###Stacked abundance column plots for Warden + Gore system waterbirds
 ```{r}
@@ -103,15 +103,15 @@ plus add dummy dates for years not surveyed
 ```{r}
 WG.stack.agg <- aggregate(data=WG.stack, Count ~ Group + Survey + Season, FUN="sum") #aggregate count data by species and survey
 #create dummy data for missing survey years for spring and summer
-md.Group <- rep("Grebes", times = 7)
-md.Survey <- c("Nov-2015","Nov-2016","Nov-2017","Nov-2019","Feb-2016","Feb-2017","Feb-2018")
-md.Season <- c(rep("spring", times = 4), rep("summer", times = 3))
-md.Count <- rep(0, times = 7)
+md.Group <- rep("Grebes", times = 9)
+md.Survey <- c("Nov-2015","Nov-2016","Nov-2017","Nov-2019","Feb-2016","Feb-2017","Feb-2018","Feb-2020","Feb-2022")
+md.Season <- c(rep("spring", times = 4), rep("summer", times = 5))
+md.Count <- rep(0, times = 9)
 Missing.dates <- data.frame(md.Group, md.Survey, md.Season, md.Count)
 colnames(Missing.dates) <- c("Group","Survey","Season","Count")
 WG.stack.agg <- rbind(WG.stack.agg, Missing.dates)
 WG.stack.agg$SurvOrd <- as.character(WG.stack.agg$Survey)
-WG.stack.agg$SurvOrd <- as.numeric(str_replace_all(WG.stack.agg$SurvOrd, c("Feb-2008" = "1", "Feb-2010" = "2", "Feb-2011" = "3", "Feb-2012" = "4", "Feb-2013" = "5", "Feb-2014" = "6", "Feb-2015" = "7", "Feb-2016" = "8", "Feb-2017" = "9", "Feb-2018" = "10", "Feb-2019" = "11", "Feb 2021" = "12", "Oct-2006" = "1", "Oct-2007" = "2", "Nov-2008" = "3", "Nov-2009" = "4", "Nov-2010" = "5", "Dec-2011" = "6", "Oct-2012" = "7", "Nov-2013"= "8", "Nov-2014" = "9", "Nov-2015" = "10", "Nov-2016" = "11", "Nov-2017" = "12", "Nov-2018" = "13", "Nov-2019" = "14", "Nov-2020" = "15", "Nov-2022" = "16")))
+WG.stack.agg$SurvOrd <- as.numeric(str_replace_all(WG.stack.agg$SurvOrd, c("Feb-2008" = "1", "Feb-2010" = "2", "Feb-2011" = "3", "Feb-2012" = "4", "Feb-2013" = "5", "Feb-2014" = "6", "Feb-2015" = "7", "Feb-2016" = "8", "Feb-2017" = "9", "Feb-2018" = "10", "Feb-2019" = "11", "Feb-2020" = "12", "Feb-2021" = "13", "Feb-2022" = "14", "Feb-2023" = "15", "Oct-2006" = "1", "Oct-2007" = "2", "Nov-2008" = "3", "Nov-2009" = "4", "Nov-2010" = "5", "Dec-2011" = "6", "Oct-2012" = "7", "Nov-2013"= "8", "Nov-2014" = "9", "Nov-2015" = "10", "Nov-2016" = "11", "Nov-2017" = "12", "Nov-2018" = "13", "Nov-2019" = "14", "Nov-2020" = "15", "Nov-2022" = "16")))
 ```
 
 #### stacked column plots for Warden+Gore by season
