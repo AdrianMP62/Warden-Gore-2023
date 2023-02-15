@@ -126,7 +126,6 @@ WG.stack.sum <- WG.stack.sum[ order(WG.stack.sum$SurvOrd), ]
 ggplot(WG.stack.sum, aes(x=reorder(Survey, SurvOrd), y=Count, fill=Group)) + geom_bar(stat="identity", colour = "black") + scale_y_continuous(breaks = seq(0,50000, by=5000), limits=c(0,50000)) + labs(x="Survey", y="Abundance") + theme (axis.text.x=element_text(angle=90)) + theme(axis.title.y = element_text(size = 20, margin = margin(t = 0, r = 20, b = 0, l = 0))) + theme(axis.title.x = element_text(size = 20, margin = margin(t = 20, r = 0, b = 0, l = 0))) + theme(axis.text.x = element_text(size=12)) + theme(axis.text.y = element_text(size=15)) + scale_fill_manual(values = c("#CD9B9B","#912CEE","#104E8B","#698B22","#00EEEE","#A2B5CD","#FFA500","#FFE1FF","#B4CDCD","#C1FFc1","#A52A2A")) #uses Date to reorder survey on x axis
 ```
 
-
 ##MULTI-VARIATE ANALYSIS OF WARDEN AND GORE DATA COMBINED, BY SEASON 
 ```{r}
 WG.bySeason <- input.data.2
@@ -322,7 +321,7 @@ The ordination plot below shows that the Warden and Gore wetland systems consist
 the Nov 2018 and Feb 2019 surveys are within the range of community compositions surveyed since 2006 for both systems, despite the very high counts in Feb 2019 and low Warden count in Nov 2018.
 
 ```{r}
-ggplot(WG.3dMDS.bySyst.pts, aes(x=MDS2, y=MDS3, shape=SystSeas, colour=SystSeas)) + xlim(min(WG.3dMDS.bySyst.pts$MDS1)*1.3,max(WG.3dMDS.bySyst.pts$MDS1)*1.3) + ylim(min(WG.3dMDS.bySyst.pts$MDS2)*1.3,max(WG.3dMDS.bySyst.pts$MDS2)*1.3) + coord_fixed(ratio = 1) + geom_point(size=5) + scale_color_manual(values=c("blue","blue","red","red")) + scale_shape_manual(values=c(0,15,2,17)) + theme(legend.title = element_blank()) + theme(legend.position = "top") + theme(legend.text=element_text(size=12)) + theme(plot.margin=unit(c(0,0,0,0),"mm")) + geom_text(aes(label=Survey), colour="black", size=3, vjust=1, hjust=1.3)
+ggplot(WG.3dMDS.bySyst.pts, aes(x=MDS1, y=MDS2, shape=SystSeas, colour=SystSeas)) + xlim(min(WG.3dMDS.bySyst.pts$MDS1)*1.3,max(WG.3dMDS.bySyst.pts$MDS1)*1.3) + ylim(min(WG.3dMDS.bySyst.pts$MDS2)*1.3,max(WG.3dMDS.bySyst.pts$MDS2)*1.3) + coord_fixed(ratio = 1) + geom_point(size=5) + scale_color_manual(values=c("blue","blue","red","red")) + scale_shape_manual(values=c(0,15,2,17)) + theme(legend.title = element_blank()) + theme(legend.position = "top") + theme(legend.text=element_text(size=12)) + theme(plot.margin=unit(c(0,0,0,0),"mm")) + geom_text(aes(label=Survey), colour="black", size=3, vjust=1, hjust=1.3)
 ```
 
 ```{r new-plot-for-Birdlife-talk}
