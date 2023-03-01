@@ -1,5 +1,5 @@
 ---
-title: "Warden and Gore waterbird analyses 2006-2023"
+title: "Warden and Gore waterbird analyses 2006 to 2023"
 author: "Adrian Pinder"
 date and time: '`r Sys.time()`'
 output:
@@ -10,8 +10,6 @@ software: 'RStudio 2022.12.0+353 "Elsbeth Geranium" Release (7d165dcfc1b6d300eb2
 editor_options: 
   chunk_output_type: console
 ---
-
-DBCA computewetertrte
 
 Git repository https://github.com/AdrianMP62/Warden-Gore-2023  
 
@@ -402,12 +400,13 @@ plot(raincheck$ESPE, -38.914+(11.19*sqrt(raincheck$MYRU)))
 ```{r}
 Adepths <- read.csv("./raw_data/average depths.csv") 
 Adepths$Date <- my(Adepths$Survey)
-Adepths$Date <- format(Adepths$Date, "%b-%Y")
+Adepths$Date <- as.Date(Adepths$Date, format = "%b-%Y")
+Adepths$Season <- as.factor(Adepths$Season)
 str(Adepths)
 ```
 
 ```{r}
-ggplot(Adepths, aes(x = Date, y = Depth, color = Season)) + geom_line()
+ggplot(Adepths, aes(x = Date, y = Depth, colour = Season, label=Survey)) + geom_line() + geom_point() + geom_text(hjust=0, vjust=0) + scale_x_date(date_breaks = "1 year", labels=date_format("%Y"), limits = as.Date(c('2006-01-01','2024-01-01')))
 ```
 
 
