@@ -196,7 +196,7 @@ Xmin <- min(WG.3dMDS.bySeas.pts$MDS1)*1.3
 Xmax <- max(WG.3dMDS.bySeas.pts$MDS1)*1.3
 Ymin <- min(WG.3dMDS.bySeas.pts$MDS3)*1.3
 Ymax <- max(WG.3dMDS.bySeas.pts$MDS3)*1.3
-ggplot(WG.3dMDS.bySeas.pts, aes(x=MDS1, y=MDS2)) + xlim(Xmin, Xmax) + ylim(Ymin, Ymax) + geom_point(aes(colour=Season), size=5) + coord_fixed(ratio = 1) + geom_text(aes(label=Survey), size=3, vjust=1, hjust=1.3) + theme (plot.margin=unit(c(0,0,0,5),"mm"))
+ggplot(WG.3dMDS.bySeas.pts, aes(x=MDS1, y=MDS2)) + xlim(Xmin-0.05, Xmax) + ylim(Ymin, Ymax) + geom_point(aes(colour=Season), size=7) + coord_fixed(ratio = 1) + geom_text(aes(label=Survey), size=4, vjust=1, hjust=1.3) + theme (plot.margin=unit(c(0,0,0,5),"mm"))
 ```
 
 ####interactive 3D plot
@@ -397,6 +397,19 @@ plot(raincheck$ESPE, -38.914+(11.19*sqrt(raincheck$MYRU)))
 
 ##Graphing lake depths
 
+```{r}
+Adepths <- read.csv("./raw_data/average depths.csv") 
+Adepths$Date <- my(Adepths$Survey)
+Adepths$Date <- format(Adepths$Date, "%b-%Y")
+str(Adepths)
+```
+
+```{r}
+ggplot(Adepths, aes(x = Date, y = Depth, color = Season)) + geom_line()
+```
+
+
+
 ###Load depth data and convert to AHD
 ```{r}
 Wdepths <- read.csv("./raw_data/Warden depths.csv") #note: all values of "dry", "pooling" and "below DG" counted as zero depth. Missing values retained.
@@ -418,7 +431,7 @@ Wdepths_Ewans <- na.omit(Wdepths_Ewans) #remove NAs
 ggplot(Wdepths_Ewans, aes(x=doy, y=Ewans, color=year)) + 
   geom_line() +
   geom_point(cex=4) +
-  scale_color_manual(values=c('grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','green','grey','grey',"grey",'grey','orange','blue','red','yellow')) +
+  scale_color_manual(values=c('grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','grey',"grey",'grey','orange','blue','red','yellow','purple')) +
     ggtitle("Ewans annual depths") +
     theme(plot.title = element_text(vjust = -10)) +
     theme(plot.title = element_text(hjust = 0.5)) +
