@@ -891,15 +891,15 @@ plus add dummy dates for years not surveyed
 ```{r}
 Warden.stack.agg <- aggregate(data=Warden.stack, Count ~ Group + Survey + Season, FUN="sum") #aggregate count data by species and survey
 #create dummy data for missing survey years for spring and summer
-md.Group <- rep("Grebes", times = 7)
-md.Survey <- c("Nov-2015","Nov-2016","Nov-2017","Nov-2019","Feb-2016","Feb-2017","Feb-2018")
-md.Season <- c(rep("spring", times = 4), rep("summer", times = 3))
-md.Count <- rep(0, times = 7)
+md.Group <- rep("Grebes", times = 11)
+md.Survey <- c("Nov-2015","Nov-2016","Nov-2017","Nov-2019","Nov-2021","Feb-2016","Feb-2017","Feb-2018","Feb-2019","Feb-2020", "Feb-2022")
+md.Season <- c(rep("spring", times = 5), rep("summer", times = 6))
+md.Count <- rep(0, times = 11)
 Missing.dates <- data.frame(md.Group, md.Survey, md.Season, md.Count)
 colnames(Missing.dates) <- c("Group","Survey","Season","Count")
 Warden.stack.agg <- rbind(Warden.stack.agg, Missing.dates)
 Warden.stack.agg$SurvOrd <- as.character(Warden.stack.agg$Survey)
-Warden.stack.agg$SurvOrd <- as.numeric(str_replace_all(Warden.stack.agg$SurvOrd, c("Feb-2008" = "1", "Feb-2010" = "2", "Feb-2011" = "3", "Feb-2012" = "4", "Feb-2013" = "5", "Feb-2014" = "6", "Feb-2015" = "7", "Feb-2016" = "8", "Feb-2017" = "9", "Feb-2018" = "10", "Feb-2019" = "11", "Feb-2021" = "12", "Oct-2006" = "1", "Oct-2007" = "2", "Nov-2008" = "3", "Nov-2009" = "4", "Nov-2010" = "5", "Dec-2011" = "6", "Oct-2012" = "7", "Nov-2013"= "8", "Nov-2014" = "9", "Nov-2015" = "10", "Nov-2016" = "11", "Nov-2017" = "12", "Nov-2018" = "13", "Nov-2019" = "14", "Nov-2020" = "15")))
+Warden.stack.agg$SurvOrd <- as.numeric(str_replace_all(Warden.stack.agg$SurvOrd, c("Feb-2008" = "1", "Feb-2010" = "2", "Feb-2011" = "3", "Feb-2012" = "4", "Feb-2013" = "5", "Feb-2014" = "6", "Feb-2015" = "7", "Feb-2016" = "8", "Feb-2017" = "9", "Feb-2018" = "10", "Feb-2019" = "11", "Feb-2020" = "12", "Feb-2021" = "13", "Feb-2022" = "14", "Oct-2006" = "1", "Oct-2007" = "2", "Nov-2008" = "3", "Nov-2009" = "4", "Nov-2010" = "5", "Dec-2011" = "6", "Oct-2012" = "7", "Nov-2013"= "8", "Nov-2014" = "9", "Nov-2015" = "10", "Nov-2016" = "11", "Nov-2017" = "12", "Nov-2018" = "13", "Nov-2019" = "14", "Nov-2020" = "15", "Nov-2021" = "16", "Nov-2022" = "17")))
 ```
 
 #### stacked column plots for Warden by season
@@ -932,15 +932,15 @@ Warden.stack.rich <- aggregate(data=Warden.stack.rich, Count ~ CommonName + Grou
 Warden.stack.rich <- Warden.stack.rich[, c("Survey","Group","Season")] #restrict data to 3 columns
 Warden.stack.rich <- count(Warden.stack.rich, c("Group","Survey","Season")) #count no. species
 #create dummy years
-md.Group <- rep("Grebes", times = 7)
-md.Survey <- c("Nov-2015","Nov-2016","Nov-2017","Nov-2019","Feb-2016","Feb-2017","Feb-2018")
-md.Season <- c(rep("spring", times = 4), rep("summer", times = 3))
-md.freq <- rep(0, times = 7)
+md.Group <- rep("Grebes", times = 11)
+md.Survey <- c("Nov-2015","Nov-2016","Nov-2017","Nov-2019","Nov-2021","Feb-2016","Feb-2017","Feb-2018","Feb-2019","Feb-2020", "Feb-2022")
+md.Season <- c(rep("spring", times = 5), rep("summer", times = 6))
+md.freq <- rep(0, times = 11)
 Missing.dates <- data.frame(md.Group, md.Survey, md.Season, md.freq)
 colnames(Missing.dates) <- c("Group","Survey","Season","freq")
 Warden.stack.rich <- rbind(Warden.stack.rich, Missing.dates)
 Warden.stack.rich$SurvOrd <- as.character(Warden.stack.rich$Survey)
-Warden.stack.rich$SurvOrd <- as.numeric(str_replace_all(Warden.stack.rich$SurvOrd, c("Feb-2008" = "1", "Feb-2010" = "2", "Feb-2011" = "3", "Feb-2012" = "4", "Feb-2013" = "5", "Feb-2014" = "6", "Feb-2015" = "7", "Feb-2016" = "8", "Feb-2017" = "9", "Feb-2018" = "10", "Feb-2019" = "11", "Oct-2006" = "1", "Oct-2007" = "2", "Nov-2008" = "3", "Nov-2009" = "4", "Nov-2010" = "5", "Dec-2011" = "6", "Oct-2012" = "7", "Nov-2013"= "8", "Nov-2014" = "9", "Nov-2015" = "10", "Nov-2016" = "11", "Nov-2017" = "12", "Nov-2018" = "13", "Nov-2019" = "14", "Nov-2020" = "15")))
+Warden.stack.rich$SurvOrd <- as.numeric(str_replace_all(Warden.stack.rich$SurvOrd, c("Feb-2008" = "1", "Feb-2010" = "2", "Feb-2011" = "3", "Feb-2012" = "4", "Feb-2013" = "5", "Feb-2014" = "6", "Feb-2015" = "7", "Feb-2016" = "8", "Feb-2017" = "9", "Feb-2018" = "10", "Feb-2019" = "11", "Feb-2020" = "12", "Feb-2021" = "13", "Feb-2022" = "14", "Oct-2006" = "1", "Oct-2007" = "2", "Nov-2008" = "3", "Nov-2009" = "4", "Nov-2010" = "5", "Dec-2011" = "6", "Oct-2012" = "7", "Nov-2013"= "8", "Nov-2014" = "9", "Nov-2015" = "10", "Nov-2016" = "11", "Nov-2017" = "12", "Nov-2018" = "13", "Nov-2019" = "14", "Nov-2020" = "15", "Nov-2021" = "16", "Nov-2022" = "17")))
 ```
 
 #### stacked richness column plots for Warden by season
