@@ -397,19 +397,17 @@ plot(raincheck$ESPE, -38.914+(11.19*sqrt(raincheck$MYRU)))
 
 ##Graphing lake depths
 
+###Graphing average Warden system depths
 ```{r}
 Adepths <- read.csv("./raw_data/average depths.csv") 
 Adepths$Date <- my(Adepths$Survey)
 Adepths$Date <- as.Date(Adepths$Date, format = "%b-%Y")
 Adepths$Season <- as.factor(Adepths$Season)
-str(Adepths)
 ```
 
 ```{r}
 ggplot(Adepths, aes(x = Date, y = Depth, colour = Season, label=Survey)) + geom_line() + geom_point() + geom_text(hjust=0, vjust=0) + scale_x_date(date_breaks = "1 year", labels=date_format("%Y"), limits = as.Date(c('2006-01-01','2024-01-01')))
 ```
-
-
 
 ###Load depth data and convert to AHD
 ```{r}
@@ -448,7 +446,7 @@ Wdepths_Wheat <- na.omit(Wdepths_Wheat) #remove NAs
 ggplot(Wdepths_Wheat, aes(x=doy, y=Wheatfield, color=year)) + 
   geom_line() +
   geom_point(cex = 4) +
-  scale_color_manual(values=c('grey','grey',"grey",'grey','grey','grey','grey','grey','grey','green','grey','grey','grey','grey','grey',"grey",'grey','grey','blue','red','yellow')) +
+  scale_color_manual(values=c('grey','grey',"grey",'grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','grey',"grey",'grey','orange','blue','red','yellow','purple')) +
     ggtitle("Wheatfield annual depths") +
     theme(plot.title = element_text(vjust = -10)) +
     theme(plot.title = element_text(hjust = 0.5)) +
@@ -464,7 +462,7 @@ Wdepths_Ward <- na.omit(Wdepths_Ward) #remove NAs
 ggplot(Wdepths_Ward, aes(x=doy, y=Warden, color=year)) + 
   geom_line() +
   geom_point(cex = 4) +
-  scale_color_manual(values=c('grey','grey',"grey",'grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','green','grey',"grey",'grey','grey','blue','red','yellow')) +
+  scale_color_manual(values=c('grey','grey',"grey",'grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','grey',"grey",'grey','orange','blue','red','yellow','purple')) +
     ggtitle("Warden annual depths") +
     theme(plot.title = element_text(vjust = -10)) +
     theme(plot.title = element_text(hjust = 0.5)) +
