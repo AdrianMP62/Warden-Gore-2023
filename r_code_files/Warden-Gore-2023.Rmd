@@ -1,5 +1,5 @@
 ---
-title: "Warden and Gore waterbird analyses 2006 to 2023"
+title: "Warden and Gore waterbird analyses 2006-2023"
 author: "Adrian Pinder"
 date and time: '`r Sys.time()`'
 output:
@@ -42,7 +42,7 @@ set.seed(1234)
 
 ```{r}
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load("gridExtra","vegan", "tidyr","ggplot2","openxlsx2", "rgl", "ggrepel", "dplyr", "plyr", "scales", "ggpubr", "stringr","reshape2", "knitr", "zoo", "car","reshape2","readxl","lubridate","Rcpp")
+pacman::p_load("plot3D","scatterplot3d","plot3Drgl","gridExtra","vegan", "tidyr","ggplot2","openxlsx2", "rgl", "ggrepel", "dplyr", "plyr", "scales", "ggpubr", "stringr","reshape2", "knitr", "zoo", "car","reshape2","readxl","lubridate","Rcpp")
 ```
 
 
@@ -196,7 +196,7 @@ Xmin <- min(WG.3dMDS.bySeas.pts$MDS1)*1.3
 Xmax <- max(WG.3dMDS.bySeas.pts$MDS1)*1.3
 Ymin <- min(WG.3dMDS.bySeas.pts$MDS3)*1.3
 Ymax <- max(WG.3dMDS.bySeas.pts$MDS3)*1.3
-ggplot(WG.3dMDS.bySeas.pts, aes(x=MDS1, y=MDS2)) + xlim(Xmin-0.05, Xmax) + ylim(Ymin, Ymax) + geom_point(aes(colour=Season), size=7) + coord_fixed(ratio = 1) + geom_text(aes(label=Survey), size=4, vjust=1, hjust=1.3) + theme (plot.margin=unit(c(0,0,0,5),"mm"))
+ggplot(WG.3dMDS.bySeas.pts, aes(x=MDS1, y=MDS2)) + xlim(Xmin, Xmax) + ylim(Ymin, Ymax) + geom_point(aes(colour=Season), size=5) + coord_fixed(ratio = 1) + geom_text(aes(label=Survey), size=3, vjust=1, hjust=1.3) + theme (plot.margin=unit(c(0,0,0,5),"mm"))
 ```
 
 ####interactive 3D plot
@@ -397,18 +397,6 @@ plot(raincheck$ESPE, -38.914+(11.19*sqrt(raincheck$MYRU)))
 
 ##Graphing lake depths
 
-###Graphing average Warden system depths
-```{r}
-Adepths <- read.csv("./raw_data/average depths.csv") 
-Adepths$Date <- my(Adepths$Survey)
-Adepths$Date <- as.Date(Adepths$Date, format = "%b-%Y")
-Adepths$Season <- as.factor(Adepths$Season)
-```
-
-```{r}
-ggplot(Adepths, aes(x = Date, y = Depth, colour = Season, label=Survey)) + geom_line() + geom_point() + geom_text(hjust=0, vjust=0) + scale_x_date(date_breaks = "1 year", labels=date_format("%Y"), limits = as.Date(c('2006-01-01','2024-01-01')))
-```
-
 ###Load depth data and convert to AHD
 ```{r}
 Wdepths <- read.csv("./raw_data/Warden depths.csv") #note: all values of "dry", "pooling" and "below DG" counted as zero depth. Missing values retained.
@@ -430,7 +418,7 @@ Wdepths_Ewans <- na.omit(Wdepths_Ewans) #remove NAs
 ggplot(Wdepths_Ewans, aes(x=doy, y=Ewans, color=year)) + 
   geom_line() +
   geom_point(cex=4) +
-  scale_color_manual(values=c('grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','grey',"grey",'grey','orange','blue','red','yellow','purple')) +
+  scale_color_manual(values=c('grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','green','grey','grey',"grey",'grey','orange','blue','red','yellow')) +
     ggtitle("Ewans annual depths") +
     theme(plot.title = element_text(vjust = -10)) +
     theme(plot.title = element_text(hjust = 0.5)) +
@@ -446,7 +434,7 @@ Wdepths_Wheat <- na.omit(Wdepths_Wheat) #remove NAs
 ggplot(Wdepths_Wheat, aes(x=doy, y=Wheatfield, color=year)) + 
   geom_line() +
   geom_point(cex = 4) +
-  scale_color_manual(values=c('grey','grey',"grey",'grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','grey',"grey",'grey','orange','blue','red','yellow','purple')) +
+  scale_color_manual(values=c('grey','grey',"grey",'grey','grey','grey','grey','grey','grey','green','grey','grey','grey','grey','grey',"grey",'grey','grey','blue','red','yellow')) +
     ggtitle("Wheatfield annual depths") +
     theme(plot.title = element_text(vjust = -10)) +
     theme(plot.title = element_text(hjust = 0.5)) +
@@ -462,7 +450,7 @@ Wdepths_Ward <- na.omit(Wdepths_Ward) #remove NAs
 ggplot(Wdepths_Ward, aes(x=doy, y=Warden, color=year)) + 
   geom_line() +
   geom_point(cex = 4) +
-  scale_color_manual(values=c('grey','grey',"grey",'grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','grey',"grey",'grey','orange','blue','red','yellow','purple')) +
+  scale_color_manual(values=c('grey','grey',"grey",'grey','grey','grey','grey','grey','grey','grey','grey','grey','grey','green','grey',"grey",'grey','grey','blue','red','yellow')) +
     ggtitle("Warden annual depths") +
     theme(plot.title = element_text(vjust = -10)) +
     theme(plot.title = element_text(hjust = 0.5)) +
@@ -589,10 +577,25 @@ write.csv(Warden.spr.m, "./outputs/Warden_spr_m.csv")
 Warden.spr.m <- read.csv("./outputs/Warden_spr_m.csv", row.names=1)
 ```
 
+####Cluster analysis of Warden data
+```{r}
+Warden.spr.bray <- vegdist(Warden.spr.m, method = "bray")
+Warden.spr.clust <- hclust(Warden.spr.bray, method = "complete")
+plot(Warden.spr.clust)
+
+Warden.sum.bray <- vegdist(Warden.sum.m, method = "bray")
+Warden.sum.clust <- hclust(Warden.sum.bray, method = "complete")
+plot(Warden.sum.clust)
+```
+
 ####MDS unconstrained ordination using metaMDS in package vegan to analyse effects of season within the Warden system
 ```{r}
-Warden.sum.MDS <- metaMDS(Warden.sum.m, distance = "bray", autotransform = TRUE)
-Warden.spr.MDS <- metaMDS(Warden.spr.m, distance = "bray", autotransform = TRUE)
+Warden.sum.MDS <- metaMDS(Warden.sum.m, distance = "bray", transform = FALSE)
+#note stress for summer is OK
+Warden.spr.MDS <- metaMDS(Warden.spr.m, distance = "bray", transform = FALSE)
+#note stress for spring too high at 0.16, so need to repeat with 3D
+Warden.spr.MDS <- metaMDS(Warden.spr.m, distance = "bray", k=3, transform = FALSE)
+#stres now low at 0.08
 ```
 
 ####Extract ordination point data for ggplots
@@ -601,6 +604,7 @@ Warden.sum.MDS.pts <- as.data.frame(Warden.sum.MDS$points) #extract coordinates 
 Warden.sum.MDS.pts$Survey <- row.names(Warden.sum.MDS.pts)
 Warden.spr.MDS.pts <- as.data.frame(Warden.spr.MDS$points) #extract coordinates from ordination
 Warden.spr.MDS.pts$Survey <- row.names(Warden.spr.MDS.pts)
+Warden.spr.MDS.pts$Cluster <- c(2,2,2,3,3,2,3,1,1,2,2,3)
 #W.points$season <- c("spring","summer","summer","summer","summer","summer","summer","summer","spring","spring","spring","spring","spring","spring","spring","spring") # add season labels as new column in dataframe
 ```
 
@@ -671,8 +675,29 @@ Surv.Pipe.sum$Days.st <- rescale(Surv.Pipe.sum$Days, to = c(0,1))
 #summer
 ggplot(Warden.sum.MDS.pts, aes(x=MDS1, y=MDS2)) + xlim(min(Warden.sum.MDS.pts$MDS1)*1.5, max(Warden.sum.MDS.pts$MDS1)*1.3) + ylim(min(Warden.sum.MDS.pts$MDS2)*1.3, max(Warden.sum.MDS.pts$MDS2)*1.3) + coord_fixed(ratio = 1) + geom_point(aes(size = BEdat.sum$Depth, colour=BEdat.sum$Depth)) + scale_size(range = c(9,20)) + geom_text(aes(label = Survey), cex=3, vjust=2, hjust=1.25) + theme(legend.position = "none")
 #spring
-ggplot(Warden.spr.MDS.pts, aes(x=MDS1, y=MDS2)) + xlim(min(Warden.spr.MDS.pts$MDS1)*0.5, max(Warden.spr.MDS.pts$MDS1)*1.3) + ylim(min(Warden.spr.MDS.pts$MDS2)*1.3, max(Warden.spr.MDS.pts$MDS2)*1.3) + coord_fixed(ratio = 1) + geom_point(aes(size = BEdat.spr.st$Depth, colour=BEdat.spr$Depth)) + scale_size(range = c(5,20)) + geom_text(aes(label = Survey), cex=4, vjust=2, hjust=1.25) + theme(legend.position = "none") + scale_x_reverse(limits=c(0.4, -0.3)) + theme(legend.title = element_blank()) + theme(legend.position = "top") + theme(legend.text=element_text(size=12)) + theme(plot.margin=unit(c(0,0,0,0),"mm")) + theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank()) + theme(axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank()) + theme(legend.title = element_blank()) + theme(legend.position = "none")
+ggplot(Warden.spr.MDS.pts, aes(x=MDS1, y=MDS2)) + xlim(min(Warden.spr.MDS.pts$MDS1)*0.5, max(Warden.spr.MDS.pts$MDS1)*1.3) + ylim(min(Warden.spr.MDS.pts$MDS2)*1.3, max(Warden.spr.MDS.pts$MDS2)*1.3) + coord_fixed(ratio = 1) + geom_point(aes(size = BEdat.spr.st$Depth, colour=BEdat.spr$Depth)) + scale_size(range = c(5,20)) + geom_text(aes(label = Survey), cex=4, vjust=2, hjust=1.25) + theme(legend.position = "none") + scale_x_reverse(limits=c(0.5, -0.5)) + theme(legend.title = element_blank()) + theme(legend.position = "top") + theme(legend.text=element_text(size=12)) + theme(plot.margin=unit(c(0,0,0,0),"mm")) + theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank()) + theme(axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank()) + theme(legend.title = element_blank()) + theme(legend.position = "none")
 ```
+
+
+```{r}
+with(Warden.spr.MDS.pts, 
+     scatterplot3d(MDS1,
+                   MDS2, 
+                   MDS3,
+                   xlab = "MDS1",
+                   ylab = "MDS2",
+                   zlab = "MDS3",
+                   pch = 16, color=as.numeric(Warden.spr.MDS.pts$Cluster),type="h"))
+
+legend("right", legend = levels(Warden.spr.MDS.pts$Cluster),
+      col =  c("darkblue", "orange", "darkgreen"), pch = 16)
+```
+
+
+
+
+
+
 
 ####Create euclidean distance matrices for datasets to be used to partial bioenv analysis
 ```{r}
@@ -884,6 +909,8 @@ ggplot(Warden.spr.MDS.pts, aes(x=MDS1, y=MDS2)) + xlim(-0.8, 0.6) + ylim(-0.6, 0
 ```{r}
 Warden.stack <- input.data[input.data$System == "Warden", ]
 Warden.stack$Group <- Taxonomy[match(Warden.stack$CommonName, Taxonomy$CommonName), 3]
+
+write.csv(Warden.stack, "./outputs/Warden.stack.csv")
 ```
 
 #### Aggregate data by taxonomic group and survey, with survey and season variables for plotting
@@ -891,15 +918,15 @@ plus add dummy dates for years not surveyed
 ```{r}
 Warden.stack.agg <- aggregate(data=Warden.stack, Count ~ Group + Survey + Season, FUN="sum") #aggregate count data by species and survey
 #create dummy data for missing survey years for spring and summer
-md.Group <- rep("Grebes", times = 11)
-md.Survey <- c("Nov-2015","Nov-2016","Nov-2017","Nov-2019","Nov-2021","Feb-2016","Feb-2017","Feb-2018","Feb-2019","Feb-2020", "Feb-2022")
-md.Season <- c(rep("spring", times = 5), rep("summer", times = 6))
-md.Count <- rep(0, times = 11)
+md.Group <- rep("Grebes", times = 7)
+md.Survey <- c("Nov-2015","Nov-2016","Nov-2017","Nov-2019","Feb-2016","Feb-2017","Feb-2018")
+md.Season <- c(rep("spring", times = 4), rep("summer", times = 3))
+md.Count <- rep(0, times = 7)
 Missing.dates <- data.frame(md.Group, md.Survey, md.Season, md.Count)
 colnames(Missing.dates) <- c("Group","Survey","Season","Count")
 Warden.stack.agg <- rbind(Warden.stack.agg, Missing.dates)
 Warden.stack.agg$SurvOrd <- as.character(Warden.stack.agg$Survey)
-Warden.stack.agg$SurvOrd <- as.numeric(str_replace_all(Warden.stack.agg$SurvOrd, c("Feb-2008" = "1", "Feb-2010" = "2", "Feb-2011" = "3", "Feb-2012" = "4", "Feb-2013" = "5", "Feb-2014" = "6", "Feb-2015" = "7", "Feb-2016" = "8", "Feb-2017" = "9", "Feb-2018" = "10", "Feb-2019" = "11", "Feb-2020" = "12", "Feb-2021" = "13", "Feb-2022" = "14", "Oct-2006" = "1", "Oct-2007" = "2", "Nov-2008" = "3", "Nov-2009" = "4", "Nov-2010" = "5", "Dec-2011" = "6", "Oct-2012" = "7", "Nov-2013"= "8", "Nov-2014" = "9", "Nov-2015" = "10", "Nov-2016" = "11", "Nov-2017" = "12", "Nov-2018" = "13", "Nov-2019" = "14", "Nov-2020" = "15", "Nov-2021" = "16", "Nov-2022" = "17")))
+Warden.stack.agg$SurvOrd <- as.numeric(str_replace_all(Warden.stack.agg$SurvOrd, c("Feb-2008" = "1", "Feb-2010" = "2", "Feb-2011" = "3", "Feb-2012" = "4", "Feb-2013" = "5", "Feb-2014" = "6", "Feb-2015" = "7", "Feb-2016" = "8", "Feb-2017" = "9", "Feb-2018" = "10", "Feb-2019" = "11", "Feb-2021" = "12", "Oct-2006" = "1", "Oct-2007" = "2", "Nov-2008" = "3", "Nov-2009" = "4", "Nov-2010" = "5", "Dec-2011" = "6", "Oct-2012" = "7", "Nov-2013"= "8", "Nov-2014" = "9", "Nov-2015" = "10", "Nov-2016" = "11", "Nov-2017" = "12", "Nov-2018" = "13", "Nov-2019" = "14", "Nov-2020" = "15")))
 ```
 
 #### stacked column plots for Warden by season
@@ -912,6 +939,19 @@ ggplot(Warden.stack.spr, aes(x=reorder(Survey, SurvOrd), y=Count, fill=Group)) +
 Warden.stack.sum <- Warden.stack.agg[Warden.stack.agg$Season=="summer", ] #cut down to just summer data
 Warden.stack.sum <- Warden.stack.sum[ order(Warden.stack.sum$SurvOrd), ]
 ggplot(Warden.stack.sum, aes(x=reorder(Survey, SurvOrd), y=Count, fill=Group)) + geom_bar(stat="identity", colour = "black") + scale_y_continuous(breaks = seq(0,30000, by=5000), limits=c(0,30000)) + labs(x="Survey", y="Abundance") + theme (axis.text.x=element_text(angle=90)) + theme(axis.title.y = element_text(size = 20, margin = margin(t = 0, r = 20, b = 0, l = 0))) + theme(axis.title.x = element_text(size = 20, margin = margin(t = 20, r = 0, b = 0, l = 0))) + theme(axis.text.x = element_text(size=12)) + theme(axis.text.y = element_text(size=15)) + scale_fill_manual(values = c("#CD9B9B","#912CEE","#104E8B","#698B22","#00EEEE","#A2B5CD","#FFA500","#FFE1FF","#B4CDCD","#C1FFc1","#A52A2A")) #uses Date to reorder survey on x axis
+```
+
+####Create group x survey matrix from stack.agg files
+```{r}
+Warden.group.spr <- Warden.stack.spr[, c("Group", "Survey", "Count")] #remove unwanted columns
+Warden.group.spr <- pivot_wider(Warden.group.spr, names_from = "Survey", values_from = "Count") #create matrix by widening table
+Warden.group.spr <- as.data.frame(Warden.group.spr)
+write.csv(Warden.group.spr, "./outputs/Warden spring by group.csv")
+
+Warden.group.sum <- Warden.stack.sum[, c("Group", "Survey", "Count")] #remove unwanted columns
+Warden.group.sum <- pivot_wider(Warden.group.sum, names_from = "Survey", values_from = "Count") #create matrix by widening table
+Warden.group.sum <- as.data.frame(Warden.group.sum)
+write.csv(Warden.group.sum, "./outputs/Warden summer by group.csv")
 ```
 
 ###Stacked column plots for species richness at Warden
@@ -932,15 +972,15 @@ Warden.stack.rich <- aggregate(data=Warden.stack.rich, Count ~ CommonName + Grou
 Warden.stack.rich <- Warden.stack.rich[, c("Survey","Group","Season")] #restrict data to 3 columns
 Warden.stack.rich <- count(Warden.stack.rich, c("Group","Survey","Season")) #count no. species
 #create dummy years
-md.Group <- rep("Grebes", times = 11)
-md.Survey <- c("Nov-2015","Nov-2016","Nov-2017","Nov-2019","Nov-2021","Feb-2016","Feb-2017","Feb-2018","Feb-2019","Feb-2020", "Feb-2022")
-md.Season <- c(rep("spring", times = 5), rep("summer", times = 6))
-md.freq <- rep(0, times = 11)
+md.Group <- rep("Grebes", times = 7)
+md.Survey <- c("Nov-2015","Nov-2016","Nov-2017","Nov-2019","Feb-2016","Feb-2017","Feb-2018")
+md.Season <- c(rep("spring", times = 4), rep("summer", times = 3))
+md.freq <- rep(0, times = 7)
 Missing.dates <- data.frame(md.Group, md.Survey, md.Season, md.freq)
 colnames(Missing.dates) <- c("Group","Survey","Season","freq")
 Warden.stack.rich <- rbind(Warden.stack.rich, Missing.dates)
 Warden.stack.rich$SurvOrd <- as.character(Warden.stack.rich$Survey)
-Warden.stack.rich$SurvOrd <- as.numeric(str_replace_all(Warden.stack.rich$SurvOrd, c("Feb-2008" = "1", "Feb-2010" = "2", "Feb-2011" = "3", "Feb-2012" = "4", "Feb-2013" = "5", "Feb-2014" = "6", "Feb-2015" = "7", "Feb-2016" = "8", "Feb-2017" = "9", "Feb-2018" = "10", "Feb-2019" = "11", "Feb-2020" = "12", "Feb-2021" = "13", "Feb-2022" = "14", "Oct-2006" = "1", "Oct-2007" = "2", "Nov-2008" = "3", "Nov-2009" = "4", "Nov-2010" = "5", "Dec-2011" = "6", "Oct-2012" = "7", "Nov-2013"= "8", "Nov-2014" = "9", "Nov-2015" = "10", "Nov-2016" = "11", "Nov-2017" = "12", "Nov-2018" = "13", "Nov-2019" = "14", "Nov-2020" = "15", "Nov-2021" = "16", "Nov-2022" = "17")))
+Warden.stack.rich$SurvOrd <- as.numeric(str_replace_all(Warden.stack.rich$SurvOrd, c("Feb-2008" = "1", "Feb-2010" = "2", "Feb-2011" = "3", "Feb-2012" = "4", "Feb-2013" = "5", "Feb-2014" = "6", "Feb-2015" = "7", "Feb-2016" = "8", "Feb-2017" = "9", "Feb-2018" = "10", "Feb-2019" = "11", "Oct-2006" = "1", "Oct-2007" = "2", "Nov-2008" = "3", "Nov-2009" = "4", "Nov-2010" = "5", "Dec-2011" = "6", "Oct-2012" = "7", "Nov-2013"= "8", "Nov-2014" = "9", "Nov-2015" = "10", "Nov-2016" = "11", "Nov-2017" = "12", "Nov-2018" = "13", "Nov-2019" = "14", "Nov-2020" = "15")))
 ```
 
 #### stacked richness column plots for Warden by season
@@ -955,6 +995,26 @@ Warden.stack.rich.sum <- Warden.stack.rich[Warden.stack.rich$Season=="summer", ]
 Warden.stack.rich.sum <- Warden.stack.rich.sum[ order(Warden.stack.rich.sum$SurvOrd), ]
 ggplot(Warden.stack.rich.sum, aes(x=reorder(Survey, SurvOrd), y=freq, fill=Group)) + geom_bar(stat="identity", colour = "black") + scale_y_continuous(breaks = seq(0,50, by=10), limits=c(0,50)) + labs(x="Survey", y="Number of species") + theme (axis.text.x=element_text(angle=90)) + theme(axis.title.y = element_text(size=20, margin = margin(t = 0, r = 20, b = 0, l = 0))) + theme(axis.title.x = element_text(size = 20, margin = margin(t = 20, r = 0, b = 0, l = 0))) + theme(axis.text.x = element_text(size=12)) + theme(axis.text.y = element_text(size=15))+ scale_fill_manual(values = c("#CD9B9B","#912CEE","#104E8B","#698B22","#00EEEE","#A2B5CD","#FFA500","#FFE1FF","#B4CDCD","#C1FFc1","#A52A2A"))
 ```
+
+####Create richness x survey matrix for output
+```{r}
+Warden.grouprich.spr <- Warden.stack.rich.spr[, c("Group", "Survey", "freq")] #remove unwanted columns
+Warden.grouprich.spr <- pivot_wider(Warden.grouprich.spr, names_from = "Survey", values_from = "freq") #create matrix by widening table
+Warden.grouprichspr <- as.data.frame(Warden.grouprich.spr)
+write.csv(Warden.grouprich.spr, "./outputs/Warden rich spring by group.csv")
+
+Warden.group.sum <- Warden.stack.sum[, c("Group", "Survey", "Count")] #remove unwanted columns
+Warden.group.sum <- pivot_wider(Warden.group.sum, names_from = "Survey", values_from = "Count") #create matrix by widening table
+Warden.group.sum <- as.data.frame(Warden.group.sum)
+write.csv(Warden.group.sum, "./outputs/Warden summer by group.csv")
+```
+
+
+
+
+
+
+
 
 ### Esperance rainfall for Warden wetlands
 ```{r}
@@ -1281,7 +1341,7 @@ ggplot(Gore.stack.rich.sum, aes(x=reorder(Survey, SurvOrd), y=freq, fill=Group))
 
 #Create ground survey matrix
 ```{r}
-WGdata <- read.csv("./raw_data/Warden_Gore_by_suite_06_22.csv")
+WGdata <- read.csv("./raw_data/Warden_Gore_by_suite_06_23.csv")
 WGdata$SSD <- paste(WGdata$SiteCode, WGdata$Subsite, WGdata$Date, sep=" ")
 ground.data <-WGdata[WGdata$SurveyType == "ground", ]
 ground.data.W <- ground.data[ground.data$System == "Warden", ]
