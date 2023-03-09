@@ -650,7 +650,6 @@ for (i in 1:ncol(BEdat.spr)){
 }
 Pipeline.spr$Pipeline_days_st <- rescale(Pipeline.spr$Pipeline_days, to = c(0,1))
 
-
 #summer
 BEdat.sum.st <-BEdat.sum
 for (i in 1:ncol(BEdat.sum)){
@@ -665,7 +664,6 @@ BEdat.spr.st2 <-BEdat.spr2
 for (i in 1:ncol(BEdat.spr2)){
   BEdat.spr.st2[, i] <- rescale(BEdat.spr2[, i], to = c(0,1))
 }
-
 Surv.Pipe.spr$Days.st <- rescale(Surv.Pipe.spr$Days, to = c(0,1))
 Surv.Pipe.sum$Days.st <- rescale(Surv.Pipe.sum$Days, to = c(0,1))
 ```
@@ -717,6 +715,23 @@ Pipeline.su.be <- bioenvdist(Pipeline.su, which = "best") #extract euclidean mat
 mantel(vegdist(Warden.sum.m, method = "bray"), Pipeline.sum.m, method="pearson", permutations=999) 
 ```
 
+####Test for effect of survey timing
+```{r}
+#spring
+SurvTime.sp <- bioenv(Warden.spr.m ~ Surv.Pipe.spr[, "Days"], method = "pearson", index = "bray", ) #bioenv to testfor effect of pipeline operation days
+SurvTime.sp
+SurvTime.sp.be <- bioenvdist(SurvTime.sp, which = "best") #extract euclidean matrix based on Pipeline_days
+mantel(vegdist(Warden.spr.m, method = "bray"), SurvTime.sp.be, method="pearson", permutations=999) 
+#summer
+SurvTime.su <- bioenv(Warden.sum.m ~ Surv.Pipe.sum[, "Days"], method = "pearson", index = "bray", ) #bioenv to testfor effect of pipeline operation days
+SurvTime.su
+SurvTime.su.be <- bioenvdist(SurvTime.su, which = "best") #extract euclidean matrix based on Pipeline_days
+mantel(vegdist(Warden.sum.m, method = "bray"), SurvTime.su.be, method="pearson", permutations=999)  
+```
+
+
+
+
 ####Bio-env analysis to determine influence of pipeline operation, depth and rainfall on waterbrd communities on the Warden wetlands. Uses pearson correlation because env vars without major outliers and not too far off normal in qqnorm plots.
 ```{r}
 #SPRING
@@ -748,8 +763,6 @@ Warden.sum.be2
 #mantel tests
 BEdat.sum.md2 <-bioenvdist(Warden.sum.be2, which="best")
 mantel(Warden.sum.md, BEdat.sum.md2, method="pearson", permutations=999) #mantel test to determine permutational significance
-
-
 ```
 
 ####Bio-env analysis to determine which species best match patterns in overall community ordination
