@@ -1283,15 +1283,15 @@ plus add dummy dates for years not surveyed
 ```{r}
 Gore.stack.agg <- aggregate(data=Gore.stack, Count ~ Group + Survey + Season, FUN="sum") #aggregate count data by species and survey
 #create dummy data for missing survey years for spring and summer
-md.Group <- rep("Grebes", times = 7)
-md.Survey <- c("Nov-2015","Nov-2016","Nov-2017","Nov-2019","Feb-2016","Feb-2017","Feb-2018")
-md.Season <- c(rep("spring", times = 4), rep("summer", times = 3))
-md.Count <- rep(0, times = 7)
+md.Group <- rep("Grebes", times = 8)
+md.Survey <- c("Nov-2015","Nov-2016","Nov-2017","Nov-2019","Feb-2016","Feb-2017","Feb-2018","Feb-2020")
+md.Season <- c(rep("spring", times = 4), rep("summer", times = 4))
+md.Count <- rep(0, times = 8)
 Missing.dates <- data.frame(md.Group, md.Survey, md.Season, md.Count)
 colnames(Missing.dates) <- c("Group","Survey","Season","Count")
 Gore.stack.agg <- rbind(Gore.stack.agg, Missing.dates)
 Gore.stack.agg$SurvOrd <- as.character(Gore.stack.agg$Survey)
-Gore.stack.agg$SurvOrd <- as.numeric(str_replace_all(Gore.stack.agg$SurvOrd, c("Feb-2010" = "1", "Feb-2011" = "2", "Feb-2012" = "3", "Feb-2013" = "4", "Feb-2014" = "5", "Feb-2015" = "6", "Feb-2016" = "7", "Feb-2017" = "8", "Feb-2018" = "9", "Feb-2019" = "10", "Nov-2009" = "1", "Nov-2010" = "2", "Dec-2011" = "3", "Oct-2012" = "4", "Nov-2013"= "5", "Nov-2014" = "6", "Nov-2015" = "7", "Nov-2016" = "8", "Nov-2017" = "9", "Nov-2018" = "10", "Nov-2019" = "11", "Nov-2020" = "12")))
+Gore.stack.agg$SurvOrd <- as.numeric(str_replace_all(Gore.stack.agg$SurvOrd, c("Feb-2010" = "1", "Feb-2011" = "2", "Feb-2012" = "3", "Feb-2013" = "4", "Feb-2014" = "5", "Feb-2015" = "6", "Feb-2016" = "7", "Feb-2017" = "8", "Feb-2018" = "9", "Feb-2019" = "10", "Feb-2020"=11, "Nov-2009" = "1", "Nov-2010" = "2", "Dec-2011" = "3", "Oct-2012" = "4", "Nov-2013"= "5", "Nov-2014" = "6", "Nov-2015" = "7", "Nov-2016" = "8", "Nov-2017" = "9", "Nov-2018" = "10", "Nov-2019" = "11", "Nov-2020" = "12")))
 ```
 
 #### stacked column plots for Gore by season
@@ -1323,10 +1323,10 @@ Gore.stack.rich <- aggregate(data=Gore.stack.rich, Count ~ CommonName + Group + 
 Gore.stack.rich <- Gore.stack.rich[, c("Survey","Group","Season")] #restrict data to 3 columns
 Gore.stack.rich <- count(Gore.stack.rich, c("Group","Survey","Season")) #count no. species
 #craete dummy years
-md.Group <- rep("Grebes", times = 7)
-md.Survey <- c("Nov-2015","Nov-2016","Nov-2017","Nov-2019","Feb-2016","Feb-2017","Feb-2018")
-md.Season <- c(rep("spring", times = 4), rep("summer", times = 3))
-md.freq <- rep(0, times = 7)
+md.Group <- rep("Grebes", times = 8)
+md.Survey <- c("Nov-2015","Nov-2016","Nov-2017","Nov-2019","Feb-2016","Feb-2017","Feb-2018","Feb-2020")
+md.Season <- c(rep("spring", times = 4), rep("summer", times = 4))
+md.freq <- rep(0, times = 8)
 Missing.dates <- data.frame(md.Group, md.Survey, md.Season, md.freq)
 colnames(Missing.dates) <- c("Group","Survey","Season","freq")
 Gore.stack.rich <- rbind(Gore.stack.rich, Missing.dates)
