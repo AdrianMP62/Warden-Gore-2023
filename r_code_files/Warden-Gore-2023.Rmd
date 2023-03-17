@@ -1113,6 +1113,26 @@ Gore.sum.agg <- aggregate(data=Gore.sum, Count ~ CommonName + Survey, FUN="sum")
 Gore.spr.agg<- aggregate(data=Gore.spr, Count ~ CommonName + Survey, FUN="sum") #aggregate count data by species and survey
 ```
 
+####Aggregate by group and produce matrices of year x group for each season
+```{r}
+Gore.sum.agg.gp <- aggregate(data=Gore.sum, Count ~ Group + Survey, FUN="sum") #aggregate count data by species and survey
+Gore.sum.gp.m <- melt(Gore.sum.agg.gp)
+Gore.sum.gp.m <- dcast(Gore.sum.gp.m, Survey ~ Group, fill="0")
+rownames(Gore.sum.gp.m) <- Gore.sum.gp.m[,1]
+Gore.sum.gp.m[,1] <- NULL
+write.csv(Gore.sum.gp.m, "./outputs/Gore_sum_gp_m.csv")
+
+Gore.spr.agg.gp<- aggregate(data=Gore.spr, Count ~ Group + Survey, FUN="sum") #aggregate count data by species and survey
+Gore.spr.gp.m <- melt(Gore.spr.agg.gp)
+Gore.spr.gp.m <- dcast(Gore.spr.gp.m, Survey ~ Group, fill="0")
+rownames(Gore.spr.gp.m) <- Gore.spr.gp.m[,1]
+Gore.spr.gp.m[,1] <- NULL
+write.csv(Gore.spr.gp.m, "./outputs/Gore_spr_gp_m.csv")
+```
+
+
+
+
 ####Create waterbird matrices by season
 ```{r}
 #summer
