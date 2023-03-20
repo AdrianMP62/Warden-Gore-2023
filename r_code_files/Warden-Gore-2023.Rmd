@@ -740,9 +740,10 @@ Surv.Pipe.sum$Days.st <- rescale(Surv.Pipe.sum$Days, to = c(0,1))
 
 ```{r}
 #summer
-ggplot(Warden.sum.MDS.pts, aes(x=MDS1, y=MDS2)) + xlim(min(Warden.sum.MDS.pts$MDS1)*1.5, max(Warden.sum.MDS.pts$MDS1)*1.3) + ylim(min(Warden.sum.MDS.pts$MDS2)*1.3, max(Warden.sum.MDS.pts$MDS2)*1.3) + coord_fixed(ratio = 1) + geom_point(aes(size = BEdat.sum$Depth, colour=BEdat.sum$Depth)) + scale_size(range = c(9,20)) + geom_text(aes(label = Survey), cex=3, vjust=2, hjust=1.25) + theme(legend.position = "none")
+ggplot(Warden.sum.MDS.pts, aes(x=MDS1, y=MDS2)) + xlim(min(Warden.sum.MDS.pts$MDS1)*1.5, max(Warden.sum.MDS.pts$MDS1)*1.3) + ylim(min(Warden.sum.MDS.pts$MDS2)*1.3, max(Warden.sum.MDS.pts$MDS2)*1.3) + coord_fixed(ratio = 1) + geom_point(aes(size = BEdat.sum$Depth, colour=BEdat.sum$Depth)) + scale_size(range = c(9,20)) + geom_text(aes(label = Survey), cex=3, vjust=2, hjust=1.25) + theme(legend.position = "none") + theme(legend.title = element_blank()) + theme(legend.position = "top") + theme(legend.text=element_text(size=12)) + theme(plot.margin=unit(c(0,0,0,0),"mm")) + theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank()) + theme(axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank()) + theme(legend.title = element_blank()) + theme(legend.position = "none")
+
 #spring
-ggplot(Warden.spr.MDS.pts, aes(x=MDS1, y=MDS2)) + xlim(min(Warden.spr.MDS.pts$MDS1)*0.5, max(Warden.spr.MDS.pts$MDS1)*1.3) + ylim(min(Warden.spr.MDS.pts$MDS2)*1.3, max(Warden.spr.MDS.pts$MDS2)*1.3) + coord_fixed(ratio = 1) + geom_point(aes(size = BEdat.spr.st$Depth, colour=BEdat.spr$Depth)) + scale_size(range = c(5,20)) + geom_text(aes(label = Survey), cex=4, vjust=2, hjust=1.25) + theme(legend.position = "none") + scale_x_reverse(limits=c(0.5, -0.5)) + theme(legend.title = element_blank()) + theme(legend.position = "top") + theme(legend.text=element_text(size=12)) + theme(plot.margin=unit(c(0,0,0,0),"mm")) + theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank()) + theme(axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank()) + theme(legend.title = element_blank()) + theme(legend.position = "none")
+ggplot(Warden.spr.MDS.pts, aes(x=MDS1, y=MDS2)) + xlim(min(Warden.spr.MDS.pts$MDS1)*1.5, max(Warden.spr.MDS.pts$MDS1)*1.3) + ylim(min(Warden.spr.MDS.pts$MDS2)*1.3, max(Warden.spr.MDS.pts$MDS2)*1.3) + coord_fixed(ratio = 1) + geom_point(aes(size = BEdat.spr$Depth, colour=BEdat.spr$Depth)) + scale_size(range = c(9,20)) + geom_text(aes(label = Survey), cex=3, vjust=2, hjust=1.25) + theme(legend.position = "none") + theme(legend.title = element_blank()) + theme(legend.position = "top") + theme(legend.text=element_text(size=12)) + theme(plot.margin=unit(c(0,0,0,0),"mm")) + theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank()) + theme(axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank()) + theme(legend.title = element_blank()) + theme(legend.position = "none")
 ```
 
 ```{r}
@@ -839,31 +840,30 @@ mantel(Warden.sum.md, BEdat.sum.md2, method="pearson", permutations=999) #mantel
 
 ```{r}
 #spring
-Warden.spr.msq <- sqrt(Warden.spr.m) #sqrt dataset since bv.step (as opposed to bvstep) does not do this, but needs to be done for consistency.
+Warden.spr.msq <- Warden.spr.m #sqrt dataset since bv.step (as opposed to bvstep) does not do this, but needs to be done for consistency.
 Warden.spr.bio <- bv.step(Warden.spr.msq, Warden.spr.msq, scale.fix=FALSE, scale.var=FALSE, fix.dist.method = "bray", var.dist.method = "bray", max.rho=0.95, min.delta.rho=0.01, output.best=10, num.restarts = 100)
 Warden.spr.bio
 #note: warnings are not important, see http://menugget.blogspot.com/2011/06/clarke-and-ainsworths-bioenv-and-bvstep.html
-spring.species <- c("Australian.Shelduck","Banded.Stilt","Grey.Teal","Pacific.Black.Duck","Red.necked.Stint","Silver.Gull","Red.necked.Avocet")
-Warden.spr7 <- Warden.spr.m[, spring.species] # create new survey x specie matrix with the 8 species from the bv.step analysis
-write.csv(Warden.spr7, "./outputs/Warden 7 species.csv")
-Warden.spr7.m <- vegdist(sqrt(Warden.spr7), method= "bray") #create dissimilarity matrix for just 8 species, for use in mantel tests
-Warden.spr.md <- vegdist(sqrt(Warden.spr.m), method = "bray") #calculate Warden spring 
-mantel(Warden.spr.md, Warden.spr7.m, method="pearson", permutations=999) #mantel test to determine permutational significance
-
-Warden.sprsp.m <- Warden.spr.msq[, spring.species] #extract just the 7 species for spring with square root abundances (because the ordination being used for the envfit (below) was performed on square root distances
+spring.species <- c("Australian.Shelduck","Banded.Stilt","Grey.Teal","Black.Swan")
+Warden.spr4 <- Warden.spr.m[, spring.species] # create new survey x specie matrix with the 4 species from the bv.step analysis
+write.csv(Warden.spr4, "./outputs/Warden 4 species.csv")
+Warden.spr4.m <- vegdist(Warden.spr4, method= "bray") #create dissimilarity matrix for just 8 species, for use in mantel tests
+Warden.spr.md <- vegdist(Warden.spr.m, method = "bray") #calculate Warden spring 
+mantel(Warden.spr.md, Warden.spr4.m, method="pearson", permutations=999) #mantel test to determine permutational significance
+Warden.sprsp.m <- Warden.spr.msq[, spring.species] #extract just the 4 species for spring
 
 #summer
-Warden.sum.msq <- sqrt(Warden.sum.m) #sqrt dataset since bv.step (as opposed to bvstep) does not do this, but needs to be done for consistency.
+Warden.sum.msq <- Warden.sum.m #sqrt dataset since bv.step (as opposed to bvstep) does not do this, but needs to be done for consistency.
 Warden.sum.bio <- bv.step(Warden.sum.msq, Warden.sum.msq, scale.fix=FALSE, scale.var=FALSE, fix.dist.method = "bray", var.dist.method = "bray", max.rho=0.95, min.delta.rho=0.01, output.best=10, num.restarts = 200)
 Warden.sum.bio
 #note: warnings are not important, see http://menugget.blogspot.com/2011/06/clarke-and-ainsworths-bioenv-and-bvstep.html
-summer.species <- c("Australian.Shelduck","Grey.Teal","Little.Black.Cormorant")
-Warden.sum3 <- Warden.sum.m[, summer.species] # create new survey x specie matrix with the 8 species from the bv.step analysis
-write.csv(Warden.sum3, "./outputs/Warden 3 species.csv")
-Warden.sum3.m <- vegdist(sqrt(Warden.sum3), method= "bray") #create dissimilarity matrix for just 8 species, for use in mantel tests
-Warden.sum.md <- vegdist(sqrt(Warden.sum.m), method = "bray") #calculate Warden suming 
-mantel(Warden.sum.md, Warden.sum3.m, method="pearson", permutations=999) #mantel test to determine permutational significance
-Warden.sumsp.m <- Warden.sum.msq[, summer.species] #extract just the 8 species for spring with square root abundances (because the ordination being used for the envfit (below) was performed on square root distances
+summer.species <- c("Banded.Stilt","Black.Swan","Pacific.Black.Duck","Red.necked.Avocet","Australian.Shelduck","Grey.Teal","Eurasian.Coot")
+Warden.sum7 <- Warden.sum.m[, summer.species] # create new survey x specie matrix with the 8 species from the bv.step analysis
+write.csv(Warden.sum7, "./outputs/Warden 7 species.csv")
+Warden.sum7.m <- vegdist(Warden.sum7, method= "bray") #create dissimilarity matrix for just 8 species, for use in mantel tests
+Warden.sum.md <- vegdist(Warden.sum.m, method = "bray") #calculate Warden suming 
+mantel(Warden.sum.md, Warden.sum7.m, method="pearson", permutations=999) #mantel test to determine permutational significance
+Warden.sumsp.m <- Warden.sum.msq[, summer.species] #extract just the 8 species for spring
 ```
 
 ####db-RDA analyses including extended plotting
