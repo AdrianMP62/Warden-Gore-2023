@@ -427,7 +427,6 @@ ttest.results
 ##REGRESSIONS OF ESPERANCE RAINFALL STATION DATA TO FILL MISSING VALUES
 
 ```{r}
-
 raincheck <- read.csv("./raw_data/rain for regr.csv")
 fit <- lm(raincheck$ESPA ~ sqrt(raincheck$ESPE) + sqrt(raincheck$MYRU))
 plot(fit)
@@ -512,64 +511,64 @@ ggplot(Wdepths_Ward, aes(x=doy, y=Warden, color=year)) +
     theme(axis.text=element_text(size=14))
 ```
 
-##continuous scale plots
+<!-- ##continuous scale plots -->
 
-##select just Sep to Nov depths and create seperate column for Sep depths only.
+<!-- ##select just Sep to Nov depths and create seperate column for Sep depths only. -->
 
-```{r}
-Wdepths_AHD_sp <- Wdepths_AHD
-Wdepths_AHD_sp$month <- month(as.POSIXlt(Wdepths_AHD_sp$Date, format="%d/%m/%Y"))
-Wdepths_AHD_sp$year <- year(as.POSIXlt(Wdepths_AHD_sp$Date, format="%d/%m/%Y"))
-Wdepths_AHD_sp <- Wdepths_AHD_sp[Wdepths_AHD_sp$month %in% c(9,10,11), ]
-Wdepths_AHD_sp$Wheat_sep <- NA
-Wdepths_AHD_sp$Woody_sep <- NA
-Wdepths_AHD_sp$year <- as.factor(Wdepths_AHD_sp$year)
-Wdepths_AHD_sp$month <- as.factor(Wdepths_AHD_sp$month)
-Wdepths_AHD_sp$Wheat_sep <- ifelse(Wdepths_AHD_sp$month == 9, Wdepths_AHD_sp$Wheatfield, 'NA')
-Wdepths_AHD_sp$Wheat_sep <- as.numeric(Wdepths_AHD_sp$Wheat_sep)
-Wdepths_AHD_sp$Woody_sep <- ifelse(Wdepths_AHD_sp$month == 9, Wdepths_AHD_sp$Woody, 'NA')
-Wdepths_AHD_sp$Woody_sep <- as.numeric(Wdepths_AHD_sp$Woody_sep)
-```
+<!-- ```{r} -->
+<!-- Wdepths_AHD_sp <- Wdepths_AHD -->
+<!-- Wdepths_AHD_sp$month <- month(as.POSIXlt(Wdepths_AHD_sp$Date, format="%d/%m/%Y")) -->
+<!-- Wdepths_AHD_sp$year <- year(as.POSIXlt(Wdepths_AHD_sp$Date, format="%d/%m/%Y")) -->
+<!-- Wdepths_AHD_sp <- Wdepths_AHD_sp[Wdepths_AHD_sp$month %in% c(9,10,11), ] -->
+<!-- Wdepths_AHD_sp$Wheat_sep <- NA -->
+<!-- Wdepths_AHD_sp$Woody_sep <- NA -->
+<!-- Wdepths_AHD_sp$year <- as.factor(Wdepths_AHD_sp$year) -->
+<!-- Wdepths_AHD_sp$month <- as.factor(Wdepths_AHD_sp$month) -->
+<!-- Wdepths_AHD_sp$Wheat_sep <- ifelse(Wdepths_AHD_sp$month == 9, Wdepths_AHD_sp$Wheatfield, 'NA') -->
+<!-- Wdepths_AHD_sp$Wheat_sep <- as.numeric(Wdepths_AHD_sp$Wheat_sep) -->
+<!-- Wdepths_AHD_sp$Woody_sep <- ifelse(Wdepths_AHD_sp$month == 9, Wdepths_AHD_sp$Woody, 'NA') -->
+<!-- Wdepths_AHD_sp$Woody_sep <- as.numeric(Wdepths_AHD_sp$Woody_sep) -->
+<!-- ``` -->
 
-##plot eastern suite depths
+<!-- ##plot eastern suite depths -->
 
-```{r}
+<!-- ```{r} -->
 
-ggp1 <-  
-  ggplot(data = Wdepths_AHD_sp, aes(x = Date)) +       # Create ggplot2 plot
-  geom_point(aes(y = Wheatfield), color = 'red') +
-  geom_point(aes(y = Wheat_sep), color = 'black') +
-   ggtitle("Wheatfield") +
-    theme(plot.title = element_text(vjust = -10)) +
-    theme(plot.title = element_text(hjust = 0.5)) +
-    ylab("Depth AHD (m)\n")
+<!-- ggp1 <-   -->
+<!--   ggplot(data = Wdepths_AHD_sp, aes(x = Date)) +       # Create ggplot2 plot -->
+<!--   geom_point(aes(y = Wheatfield), color = 'red') + -->
+<!--   geom_point(aes(y = Wheat_sep), color = 'black') + -->
+<!--    ggtitle("Wheatfield") + -->
+<!--     theme(plot.title = element_text(vjust = -10)) + -->
+<!--     theme(plot.title = element_text(hjust = 0.5)) + -->
+<!--     ylab("Depth AHD (m)\n") -->
 
-ggp2 <- ggplot(data = Wdepths_AHD_sp, aes(x = Date)) +       # Create ggplot2 plot
-  geom_point(aes(y = Woody), color = 'red') +
-  geom_point(aes(y = Woody_sep), color = 'black') +
-   ggtitle("Woody") +
-    theme(plot.title = element_text(vjust = -10)) +
-    theme(plot.title = element_text(hjust = 0.5)) +
-    ylab("Depth AHD (m)\n")
+<!-- ggp2 <- ggplot(data = Wdepths_AHD_sp, aes(x = Date)) +       # Create ggplot2 plot -->
+<!--   geom_point(aes(y = Woody), color = 'red') + -->
+<!--   geom_point(aes(y = Woody_sep), color = 'black') + -->
+<!--    ggtitle("Woody") + -->
+<!--     theme(plot.title = element_text(vjust = -10)) + -->
+<!--     theme(plot.title = element_text(hjust = 0.5)) + -->
+<!--     ylab("Depth AHD (m)\n") -->
 
-ggp3 <- ggplot(data = Wdepths_AHD_sp, aes(x = Date)) +       # Create ggplot2 plot
-  geom_point(aes(y = Windabout, color = year)) +
-   ggtitle("Windabout") +
-    theme(plot.title = element_text(vjust = -10)) +
-    theme(plot.title = element_text(hjust = 0.5)) +
-    ylab("Depth AHD (m)\n")
+<!-- ggp3 <- ggplot(data = Wdepths_AHD_sp, aes(x = Date)) +       # Create ggplot2 plot -->
+<!--   geom_point(aes(y = Windabout, color = year)) + -->
+<!--    ggtitle("Windabout") + -->
+<!--     theme(plot.title = element_text(vjust = -10)) + -->
+<!--     theme(plot.title = element_text(hjust = 0.5)) + -->
+<!--     ylab("Depth AHD (m)\n") -->
 
-ggp4 <- ggplot(data = Wdepths_AHD_sp, aes(x = Date)) +       # Create ggplot2 plot
-  geom_point(aes(y = Warden, color = year)) +
-   ggtitle("Warden") +
-    theme(plot.title = element_text(vjust = -10)) +
-    theme(plot.title = element_text(hjust = 0.5)) +
-    ylab("Depth AHD (m)\n")
-```
+<!-- ggp4 <- ggplot(data = Wdepths_AHD_sp, aes(x = Date)) +       # Create ggplot2 plot -->
+<!--   geom_point(aes(y = Warden, color = year)) + -->
+<!--    ggtitle("Warden") + -->
+<!--     theme(plot.title = element_text(vjust = -10)) + -->
+<!--     theme(plot.title = element_text(hjust = 0.5)) + -->
+<!--     ylab("Depth AHD (m)\n") -->
+<!-- ``` -->
 
-```{r}
-ggarrange(ggp1, ggp2, ggp3, ggp4, nrow=4, common.legend=TRUE, legend = "right")
-```
+<!-- ```{r} -->
+<!-- ggarrange(ggp1, ggp2, ggp3, ggp4, nrow=4, common.legend=TRUE, legend = "right") -->
+<!-- ``` -->
 
 ###Totals of species abundances x year (for spring)
 
@@ -658,7 +657,7 @@ Warden.sum.MDS <- metaMDS(Warden.sum.m, distance = "bray", transform = FALSE)
 Warden.spr.MDS <- metaMDS(Warden.spr.m, distance = "bray", transform = FALSE)
 #note stress for spring too high at 0.16, so need to repeat with 3D
 Warden.spr.MDS <- metaMDS(Warden.spr.m, distance = "bray", k=3, transform = FALSE)
-#stres now low at 0.08
+#stress now low at 0.08
 ```
 
 ####Extract ordination point data for ggplots
@@ -1149,11 +1148,39 @@ Species <- input.data.2
 #### extract data for particular species
 
 ```{r}
-sp.id <- "Chestnut Teal"
-sp.selected <- Species[Species$CommonName == sp.id, ]
+sp.id <- c("Australian Shelduck","Hoary-headed Grebe","Yellow-billed Spoonbill","Australian Pelicans","Grey Teal")
+sp.selected <- Species.sum[Species.sum$CommonName == sp.id, ]
 sp.selected <- sp.selected[order(sp.selected$Date), ]
 write.csv(sp.selected, file = sp.id)
 ```
+
+#### Abundance plots for key Warden species
+```{r}
+Warden.spr.splots <- as_tibble(Warden.spr)
+Warden.spr.splots <- Warden.spr.splots %>% filter(CommonName %in% c("Australian Shelduck","Hoary-headed Grebe","Yellow-billed Spoonbill","Grey Teal","Australian White Ibis","Black Swan","Hooded Plover","Red=-necked Avocet","Red-necked Stint","Sharp-tailed Sandpiper","Banded Stilt"))
+Warden.spr.splots
+Warden.spr.splots$Survey2 <- format(as.Date(Warden.spr.splots$Date), "%b-%Y")
+
+df %>%
+  mutate(
+    Date = ymd(Date),
+    Month_Yr = format_ISO8601(Date, precision = "ym")
+
+
+
+
+
+p <- ggplot(Warden.spr, aes(x=Date, y=Count)) + geom_col()
+p + facet_wrap( ~ CommonName)
+
+```
+
+
+
+
+
+
+
 
 ##GORE SYSTEM ANALYSIS ONLY
 
