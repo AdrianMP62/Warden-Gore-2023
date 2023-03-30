@@ -1155,6 +1155,27 @@ sp.selected <- sp.selected[order(sp.selected$Date), ]
 write.csv(sp.selected, file = sp.id)
 ```
 
+#### Abundance plots for key Warden species
+```{r}
+Warden.spr.splots <- as_tibble(Warden.spr)
+Warden.spr.splots <- Warden.spr.splots %>% filter(CommonName %in% c("Australian Shelduck","Hoary-headed Grebe","Yellow-billed Spoonbill","Grey Teal","Australian White Ibis","Black Swan","Hooded Plover","Red=-necked Avocet","Red-necked Stint","Sharp-tailed Sandpiper","Banded Stilt"))
+Warden.spr.splots$SurvOrd <- Warden.spr.splots$Survey
+Warden.spr.splots$SurvOrd <- as.numeric(str_replace_all(Warden.spr.splots$SurvOrd, c("Oct-2006" = "1", "Oct-2007" = "2", "Nov-2008" = "3", "Nov-2009" = "4", "Nov-2010" = "5", "Dec-2011" = "6", "Oct-2012" = "7", "Nov-2013"= "8", "Nov-2014" = "9", "Nov-2015" = "10", "Nov-2016" = "11", "Nov-2017" = "12", "Nov-2018" = "13", "Nov-2019" = "14", "Nov-2020" = "15", "Nov-2022" = "16")))
+Warden.spr.splots
+
+
+
+
+
+p <- ggplot(subset(Warden.spr.splots, CommonName %in% "Australian Shelduck"), aes(x=reorder(Survey, SurvOrd), y=Count)) + geom_col()
+p
+
+```
+
+
+
+
+
 ##GORE SYSTEM ANALYSIS ONLY
 
 ###Totals of species abundances x year
