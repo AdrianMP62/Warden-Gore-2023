@@ -1157,6 +1157,7 @@ write.csv(sp.selected, file = sp.id)
 
 #### Abundance plots for key Warden species
 ```{r}
+<<<<<<< HEAD
 #SPRING
 Warden.spr.splots <- as_tibble(Warden.spr[, c(7,9,10)])
 #select species
@@ -1198,10 +1199,24 @@ Warden.spr.splots.agg$CommonName <- factor(Warden.spr.splots.agg$CommonName, lev
 Warden.sum.splots.agg$Survey <- factor(Warden.sum.splots.agg$Survey, levels = c("Feb-2008", "Feb-2010", "Feb-2011", "Feb-2012", "Feb-2013", "Feb-2014", "Feb-2015", "Feb-2016", "Feb-2017", "Feb-2018", "Feb-2019", "Feb-2020", "Feb-2021", "Feb-2022", "Feb-2023"))
 #plot data
 ggplot(Warden.sum.splots.agg, aes(Survey, Count)) + geom_col() + facet_grid(CommonName~., scales="free_y") + theme(axis.text.x = element_text(angle = 90, size=12, hjust=0.5, vjust=0.5)) + theme(axis.text.y = element_text(size=12)) + theme(axis.title=element_text(size=14)) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+=======
+Warden.spr.splots <- as_tibble(Warden.spr)
+Warden.spr.splots <- Warden.spr.splots %>% filter(CommonName %in% c("Australian Shelduck","Hoary-headed Grebe","Yellow-billed Spoonbill","Grey Teal","Australian White Ibis","Black Swan","Hooded Plover","Red=-necked Avocet","Red-necked Stint","Sharp-tailed Sandpiper","Banded Stilt"))
+Warden.spr.splots$SurvOrd <- Warden.spr.splots$Survey
+Warden.spr.splots$SurvOrd <- as.numeric(str_replace_all(Warden.spr.splots$SurvOrd, c("Oct-2006" = "1", "Oct-2007" = "2", "Nov-2008" = "3", "Nov-2009" = "4", "Nov-2010" = "5", "Dec-2011" = "6", "Oct-2012" = "7", "Nov-2013"= "8", "Nov-2014" = "9", "Nov-2015" = "10", "Nov-2016" = "11", "Nov-2017" = "12", "Nov-2018" = "13", "Nov-2019" = "14", "Nov-2020" = "15", "Nov-2022" = "16")))
+Warden.spr.splots
+>>>>>>> 9e2b300e8953c0edec1cc148160d64f54fbc990d
 
 
 
 
+<<<<<<< HEAD
+=======
+
+p <- ggplot(subset(Warden.spr.splots, CommonName %in% "Australian Shelduck"), aes(x=reorder(Survey, SurvOrd), y=Count)) + geom_col()
+p
+
+>>>>>>> 9e2b300e8953c0edec1cc148160d64f54fbc990d
 ```
 
 
