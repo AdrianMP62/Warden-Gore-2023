@@ -44,12 +44,10 @@ set.seed(1234)
 
 ```{r}
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load("plot3D","datawizard","scatterplot3d","plot3Drgl","gridExtra","vegan", "tidyr","ggplot2","openxlsx2", "rgl", "ggrepel", "dplyr", "plyr", "scales", "ggpubr", "stringr","simba","reshape2", "knitr", "zoo", "car","reshape2","readxl","lubridate","Rcpp")
+pacman::p_load("plot3D","datawizard","scatterplot3d","plot3Drgl","gridExtra","vegan", "tidyr","ggplot2","openxlsx2", "rgl", "ggrepel", "dplyr", "plyr", "scales", "ggpubr", "stringr","reshape2", "knitr", "zoo", "car","reshape2","readxl","lubridate","Rcpp")
 ```
 
 ```{r}
-#Packages <- c("gridExtra","vegan", "tidyr","ggplot2", "dplyr", "plyr", "scales", "ggpubr", "stringr","reshape2", "knitr", "zoo", "car","reshape2","readxl","lubridate","Rcpp")
-#lapply(Packages, library, character.only = TRUE)
 source("./functions/bio_env_ext.R") #The Bio_env and bv_step_ext routines below comes from http://menugget.blogspot.com.au/2011/06/clarke-and-ainsworths-bioenv-and-bvstep.html
 source("./functions/bv_step_ext.R")
 source("./functions/bv.step.R")
