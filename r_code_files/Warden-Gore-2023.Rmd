@@ -13,21 +13,22 @@ editor_options:
     wrap: sentence
 ---
 
-
-sdaff
-
 Git repository <https://github.com/AdrianMP62/Warden-Gore-2023>
 
 RStudio 2022.12.0+353 "Elsbeth Geranium" Release (7d165dcfc1b6d300eb247738db2c7076234f6ef0, 2022-12-03) for macOS Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) RStudio/2022.12.0+353 Chrome/102.0.5005.167 Electron/19.1.3 Safari/537.36.
 R version: `r getRversion()`\
 Date and time: `r Sys.time()`
 
-Uses the following datafiles:\
-\* Warden_Gore_by_suite_06_23.csv (System, SurveyType, SiteName, SiteCode, Subsite Date, CommonName, SpeciesCode, Count) (e.g. Warden, aerial, Neridup Suite, WRP001, combined, 11/10/2006, Great Egret, greg, 1).
-Note some double counts for Oct 2006 and Feb 2015 removed.
+Uses the following five datafiles:\
+\* Warden_Gore_by_suite_06_23.csv (System, SurveyType, SiteName, SiteCode, Subsite Date, CommonName, SpeciesCode, Count) (e.g. Warden, aerial, Neridup Suite, WRP001, combined, 11/10/2006, Great Egret, greg, 1). Note some double counts for Oct 2006 and Feb 2015 removed.
+
 \* Average depths.csv (average depths, rainfall variables and pipeline operation and timing of surveys of Warden wetlands for each survey period).
+
 \* Taxonomy (CommonName, Order and informal group name in consecutive columns. CommonNames match those in Warden_Gore_by_suite_06_19.csv)
+
 \* Warden depths.csv (Average depth of warden wetlands, cumulative deviations from monthly means, days pipeline open in prior 3 months and timing of spring and summer surveys.
+
+\* Rain for regr.csv CDM from 3 weather stations to model for missing values.
 
 Date and time: `r Sys.time()`
 
@@ -693,12 +694,12 @@ mantel(vegdist(Warden.sum.m, method = "bray"), Pipeline.sum.m, method="pearson",
 #Test for effect of survey timing
 
 #spring
-SurvTime.sp <- bioenv(Warden.spr.m ~ Surv.Pipe.spr[, "Days"], method = "pearson", index = "bray", ) #bioenv to testfor effect of pipeline operation days
+SurvTime.sp <- bioenv(Warden.spr.m ~ Surv.Pipe.spr[, "Days"], method = "pearson", index = "bray", ) #bioenv to test for effect of pipeline operation days
 SurvTime.sp
 SurvTime.sp.be <- bioenvdist(SurvTime.sp, which = "best") #extract euclidean matrix based on Pipeline_days
 mantel(vegdist(Warden.spr.m, method = "bray"), SurvTime.sp.be, method="pearson", permutations=999) 
 #summer
-SurvTime.su <- bioenv(Warden.sum.m ~ Surv.Pipe.sum[, "Days"], method = "pearson", index = "bray", ) #bioenv to testfor effect of pipeline operation days
+SurvTime.su <- bioenv(Warden.sum.m ~ Surv.Pipe.sum[, "Days"], method = "pearson", index = "bray", ) #bioenv to test for effect of pipeline operation days
 SurvTime.su
 SurvTime.su.be <- bioenvdist(SurvTime.su, which = "best") #extract euclidean matrix based on Pipeline_days
 mantel(vegdist(Warden.sum.m, method = "bray"), SurvTime.su.be, method="pearson", permutations=999)  
@@ -983,11 +984,13 @@ Warden.stack.rich$SurvOrd <- as.numeric(str_replace_all(Warden.stack.rich$SurvOr
 Warden.stack.rich.spr <- Warden.stack.rich[Warden.stack.rich$Season=="spring", ]
 #cut down to just spring data
 Warden.stack.rich.spr <- Warden.stack.rich.spr[order(Warden.stack.rich.spr$SurvOrd), ]
+
 ggplot(Warden.stack.rich.spr, aes(x=reorder(Survey, SurvOrd), y=freq, fill=Group)) + geom_bar(stat="identity", colour = "black") + scale_y_continuous(breaks = seq(0,50, by=10), limits=c(0,50)) + labs(x="Survey", y="Number of species") + theme (axis.text.x=element_text(angle=90)) + theme(axis.title.y = element_text(size=20, margin = margin(t = 0, r = 20, b = 0, l = 0))) + theme(axis.title.x = element_text(size=20, margin = margin(t = 20, r = 0, b = 0, l = 0))) + theme(axis.text.x = element_text(size=12)) + theme(axis.text.y = element_text(size=15)) + scale_fill_manual(values = c("#CD9B9B","#912CEE","#104E8B","#698B22","#00EEEE","#A2B5CD","#FFA500","#FFE1FF","#B4CDCD","#C1FFc1","#A52A2A"))
 
 #summer
 Warden.stack.rich.sum <- Warden.stack.rich[Warden.stack.rich$Season=="summer", ] #cut down to just summer data
 Warden.stack.rich.sum <- Warden.stack.rich.sum[ order(Warden.stack.rich.sum$SurvOrd), ]
+
 ggplot(Warden.stack.rich.sum, aes(x=reorder(Survey, SurvOrd), y=freq, fill=Group)) + geom_bar(stat="identity", colour = "black") + scale_y_continuous(breaks = seq(0,50, by=10), limits=c(0,50)) + labs(x="Survey", y="Number of species") + theme (axis.text.x=element_text(angle=90)) + theme(axis.title.y = element_text(size=20, margin = margin(t = 0, r = 20, b = 0, l = 0))) + theme(axis.title.x = element_text(size = 20, margin = margin(t = 20, r = 0, b = 0, l = 0))) + theme(axis.text.x = element_text(size=12)) + theme(axis.text.y = element_text(size=15))+ scale_fill_manual(values = c("#CD9B9B","#912CEE","#104E8B","#698B22","#00EEEE","#A2B5CD","#FFA500","#FFE1FF","#B4CDCD","#C1FFc1","#A52A2A"))
 ```
 
@@ -1309,11 +1312,13 @@ Gore.stack.agg$SurvOrd <- as.numeric(str_replace_all(Gore.stack.agg$SurvOrd, c("
 #spring
 Gore.stack.spr <- Gore.stack.agg[Gore.stack.agg$Season=="spring", ] #cut down to just spring data
 Gore.stack.spr <- Gore.stack.spr[ order(Gore.stack.spr$SurvOrd), ]
+
 ggplot(Gore.stack.spr, aes(x=reorder(Survey, SurvOrd), y=Count, fill=Group)) + geom_bar(stat="identity", colour = "black") + scale_y_continuous(breaks = seq(0,25000, by=2500), limits=c(0,22500)) + labs(x="Survey", y="Abundance") + theme (axis.text.x=element_text(angle=90)) + theme(axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0))) + theme(axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0))) + scale_fill_manual(values = c("#CD9B9B","#912CEE","#104E8B","#698B22","#00EEEE","#FFA500","#FFE1FF","#B4CDCD","#C1FFc1","#A52A2A"))
 
 #summer
 Gore.stack.sum <- Gore.stack.agg[Gore.stack.agg$Season=="summer", ] #cut down to just summer data
 Gore.stack.sum <- Gore.stack.sum[ order(Gore.stack.sum$SurvOrd), ]
+
 ggplot(Gore.stack.sum, aes(x=reorder(Survey, SurvOrd), y=Count, fill=Group)) + geom_bar(stat="identity", colour = "black") + scale_y_continuous(breaks = seq(0,25000, by=2500), limits=c(0,22500)) + labs(x="Survey", y="Abundance") + theme (axis.text.x=element_text(angle=90)) + theme(axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0))) + theme(axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0))) + scale_fill_manual(values = c("#CD9B9B","#912CEE","#104E8B","#698B22","#00EEEE","#A2B5CD","#FFA500","#FFE1FF","#B4CDCD","#C1FFc1","#A52A2A")) #uses Date to reorder survey on x axis
 ```
 
@@ -1353,11 +1358,13 @@ Gore.stack.rich$SurvOrd <- as.numeric(str_replace_all(Gore.stack.rich$SurvOrd, c
 Gore.stack.rich.spr <- Gore.stack.rich[Gore.stack.rich$Season=="spring", ]
 #cut down to just spring data
 Gore.stack.rich.spr <- Gore.stack.rich.spr[order(Gore.stack.rich.spr$SurvOrd), ]
+
 ggplot(Gore.stack.rich.spr, aes(x=reorder(Survey, SurvOrd), y=freq, fill=Group)) + geom_bar(stat="identity", colour = "black") + scale_y_continuous(breaks = seq(0,40, by=10), limits=c(0,40)) + labs(x="Survey", y="Number of species") + theme (axis.text.x=element_text(angle=90)) + theme(axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0))) + theme(axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0))) + scale_fill_manual(values = c("#CD9B9B","#912CEE","#104E8B","#698B22","#00EEEE","#FFA500","#FFE1FF","#B4CDCD","#C1FFc1","#A52A2A"))
 
 #summer
 Gore.stack.rich.sum <- Gore.stack.rich[Gore.stack.rich$Season=="summer", ] #cut down to just summer data
 Gore.stack.rich.sum <- Gore.stack.rich.sum[ order(Gore.stack.rich.sum$SurvOrd), ]
+
 ggplot(Gore.stack.rich.sum, aes(x=reorder(Survey, SurvOrd), y=freq, fill=Group)) + geom_bar(stat="identity", colour = "black") + scale_y_continuous(breaks = seq(0,40, by=10), limits=c(0,40)) + labs(x="Survey", y="Number of species") + theme (axis.text.x=element_text(angle=90)) + theme(axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0))) + theme(axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0))) + scale_fill_manual(values = c("#CD9B9B","#912CEE","#104E8B","#698B22","#00EEEE","#A2B5CD","#FFA500","#FFE1FF","#B4CDCD","#C1FFc1","#A52A2A"))
 ```
 
